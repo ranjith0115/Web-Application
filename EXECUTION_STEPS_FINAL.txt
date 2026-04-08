@@ -1,0 +1,189 @@
+Secure Data Sharing in Cloud Using Attribute-Based Encryption (ABE) — COMPLETE EXECUTION STEPS
+
+
+
+STEP 0: PREREQUISITES
+
+Install:
+
+* Python 3.10+
+* Node.js 18+
+* MongoDB (Local OR Atlas)
+* MetaMask extension (for verification)
+* Ganache
+
+
+
+
+STEP 1: MANUAL START (FOR DEMO)
+
+---
+
+STEP 1.1: START GANACHE (BLOCKCHAIN)
+
+Run:
+
+
+
+STEP 1.2: CONFIGURE MONGODB
+
+Copy:
+.env. example → .env
+
+Edit .env:
+
+For Local:
+STORAGE_BACKEND=mongo
+MONGODB_URI=mongodb://localhost:27017
+
+For Atlas:
+STORAGE_BACKEND=mongo
+MONGODB_URI=mongodb+srv://...
+
+
+
+STEP 1.3: INSTALL BACKEND DEPENDENCIES
+
+Run from project root:
+
+python -m pip install -r backend/requirements.txt
+
+
+
+STEP 1.4: DEPLOY SMART CONTRACT
+
+ USING REMIX + METAMASK
+
+1. Start Ganache
+
+2. Setup MetaMask:
+
+   -> Add Network:
+     Name: Ganache Local
+     RPC: http://127.0.0.1:7545
+     Chain ID: 1337
+
+3. Import Ganache account:
+
+   -> Copy private key from Ganache
+   -> MetaMask → Import Account
+
+4. Open Remix:
+   https://remix.ethereum.org
+
+5. Load contract:
+   KeyAuthority.sol
+
+6. Compile contract
+
+7. Deploy:
+
+   * Environment: Injected Provider (MetaMask)
+   * Confirm MetaMask transaction
+
+8. Copy deployed contract address
+
+9. Update:
+   backend/blockchain/DEPLOYMENT_INFO.json
+
+
+
+STEP 1.5: START BACKEND
+
+Run:
+
+python -m uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
+
+Check:
+http://127.0.0.1:8000/docs
+http://127.0.0.1:8000/storage/health
+
+
+
+STEP 1.6: START FRONTEND
+
+Open new terminal:
+
+cd frontend
+npm install
+npm start
+
+Open:
+http://localhost:3000
+
+---
+
+STEP 2: LOGIN DETAILS
+
+Admin → admin / admin123
+User  → alice / alice123
+
+---
+
+STEP 3: DEMO FLOW
+
+
+
+STEP 3A: ADMIN UPLOAD
+
+1. Open UI → http://localhost:3000
+2. Login as admin
+3. Go to Upload page
+4. Select file
+5. Set access policy
+
+Example:
+
+-> role:employee AND department:IT
+-> role:employee AND clearance:high
+
+6. Click Upload
+7. Save file_id
+
+
+
+STEP 3B: USER DOWNLOAD
+
+1. Login as alice
+
+2. Go to /access page
+
+3. Click "Request approval"
+
+4. Click "Simulate approvals" (4-of-7)
+
+5. Click "Verify with MetaMask"
+   (Sign message in MetaMask)
+
+6. Click "Download"
+
+---
+
+STEP 4: COMMON ISSUES
+
+Port 8000 error:
+netstat -ano | findstr :8000
+taskkill /PID <PID> /F
+
+Frontend issue:
+Ensure backend is running
+
+Ganache issue:
+Restart Ganache
+
+Contract issue:
+Re-deploy contract
+
+MetaMask issue:
+Unlock wallet + connect to Ganache
+
+---
+
+STEP 5: STOP
+
+Close all terminals
+OR press Ctrl + C
+
+---
+
+END
